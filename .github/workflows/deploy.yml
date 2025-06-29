@@ -44,4 +44,4 @@ jobs:
             docker build -t ngx-mfe-orchestrator .
             docker stop ngx-mfe-orchestrator || true
             docker rm ngx-mfe-orchestrator || true
-            docker run -d --name ngx-mfe-orchestrator --env-file .env -p 3000:3000 ngx-mfe-orchestrator
+            docker run -d --name ngx-mfe-orchestrator --env-file .env -p 3001:3001 ngx-mfe-orchestrator
