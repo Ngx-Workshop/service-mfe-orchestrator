@@ -11,8 +11,8 @@ export class MfeRemote extends Document {
   @Prop({ required: true })
   remoteEntryUrl: string;
 
-  @Prop({ required: true })
-  version: string;
+  @Prop({ default: 1 })
+  version: number;
 
   @Prop()
   status: string;
@@ -28,3 +28,34 @@ export class MfeRemote extends Document {
 }
 
 export const MfeRemoteSchema = SchemaFactory.createForClass(MfeRemote);
+
+// Auto-increment version on updates
+MfeRemoteSchema.pre('findOneAndUpdate', function() {
+  const update = this.getUpdate() as any;
+  if (update) {
+    if (!update.$inc) {
+      update.$inc = {};
+    }
+    update.$inc.version = 1;
+  }
+});
+
+MfeRemoteSchema.pre('updateOne', function() {
+  const update = this.getUpdate() as any;
+  if (update) {
+    if (!update.$inc) {
+      update.$inc = {};
+    }
+    update.$inc.version = 1;
+  }
+});
+
+MfeRemoteSchema.pre('updateMany', function() {
+  const update = this.getUpdate() as any;
+  if (update) {
+    if (!update.$inc) {
+      update.$inc = {};
+    }
+    update.$inc.version = 1;
+  }
+});

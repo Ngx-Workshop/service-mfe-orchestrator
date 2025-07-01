@@ -15,9 +15,9 @@ export class CreateMfeRemoteDto {
   @IsNotEmpty()
   remoteEntryUrl: string;
 
-  @IsString()
-  @IsNotEmpty()
-  version: string;
+  // @IsNumber()
+  // @IsNotEmpty()
+  // version: number; // Auto-incremented by the schema
 
   @IsString()
   @IsOptional()
