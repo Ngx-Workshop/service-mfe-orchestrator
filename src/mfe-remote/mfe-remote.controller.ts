@@ -9,14 +9,22 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { MfeRemoteService } from './mfe-remote.service';
 import { CreateMfeRemoteDto } from './dto/create-mfe-remote.dto';
 import { UpdateMfeRemoteDto } from './dto/update-mfe-remote.dto';
+import { RemoteAuthGuard } from '@tmdjr/ngx-auth-client';
 
 @Controller('mfe-remotes')
 export class MfeRemoteController {
   constructor(private readonly mfeRemoteService: MfeRemoteService) {}
+
+  @Get('auth-test')
+  @UseGuards(RemoteAuthGuard)
+  authTest() {
+    return this.mfeRemoteService.authTest();
+  }
 
   @Post()
   create(@Body() createMfeRemoteDto: CreateMfeRemoteDto) {

@@ -8,6 +8,7 @@ import { Model } from 'mongoose';
 import { MfeRemote, MfeRemoteDocument } from './schemas/mfe-remote.schema';
 import { CreateMfeRemoteDto } from './dto/create-mfe-remote.dto';
 import { UpdateMfeRemoteDto } from './dto/update-mfe-remote.dto';
+import { lastValueFrom, of } from 'rxjs';
 
 @Injectable()
 export class MfeRemoteService {
@@ -15,6 +16,11 @@ export class MfeRemoteService {
     @InjectModel(MfeRemote.name)
     private mfeRemoteModel: Model<MfeRemoteDocument>,
   ) {}
+
+
+  async authTest(): Promise<{ message: string }> {
+    return lastValueFrom(of({ message: 'Authentication successful Service' }));
+  }
 
   async create(createMfeRemoteDto: CreateMfeRemoteDto): Promise<MfeRemote> {
     try {
