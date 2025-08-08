@@ -19,8 +19,8 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "."
-          target: "/opt/ngx-nestjs-services/ngx-mfe-orchestrator"
+          source: '.'
+          target: '/opt/ngx-nestjs-services/ngx-mfe-orchestrator'
 
       - name: SSH and Deploy
         uses: appleboy/ssh-action@master
@@ -31,18 +31,25 @@ jobs:
           script: |
             cd /opt/ngx-nestjs-services/ngx-mfe-orchestrator
 
+            echo "🌐 Ensuring shared Docker network exists..."
+            docker network ls | grep -q "ngx-net" || docker network create ngx-net
+
             echo "🔑 Writing .env from GitHub secrets..."
             echo "PORT=${{ secrets.PORT }}" > .env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
-            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env
-            echo "JWT_ISSUER=${{ secrets.JWT_ISSUER }}" >> .env
-            echo "JWT_AUDIENCE=${{ secrets.JWT_AUDIENCE }}" >> .env
-            echo "JWT_ACCESS_TOKEN_TTL=${{ secrets.JWT_ACCESS_TOKEN_TTL }}" >> .env
-            echo "JWT_REFRESH_TOKEN_TTL=${{ secrets.JWT_REFRESH_TOKEN_TTL }}" >> .env
             echo "AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }}" >> .env
+
+            echo "🔗 Connecting peer services to ngx-net (ignore errors if not present)..."
+            docker network connect ngx-net ngx-workshop-bff 2>/dev/null || true
+            docker network connect ngx-net ngx-auth-service 2>/dev/null || true
 
             echo "🚀 Building and starting container..."
             docker build -t ngx-mfe-orchestrator .
             docker stop ngx-mfe-orchestrator || true
             docker rm ngx-mfe-orchestrator || true
-            docker run -d --name ngx-mfe-orchestrator --env-file .env -p 3001:3001 ngx-mfe-orchestrator
+            docker run -d \
+              --name ngx-mfe-orchestrator \
+              --env-file .env \
+              --network ngx-net \
+              --restart unless-stopped \
+              -p 3001:3001 \
+              ngx-mfe-orchestrator
