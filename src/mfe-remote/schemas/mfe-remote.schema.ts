@@ -1,6 +1,25 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+export enum MfeRemoteType {
+  STRUCTURAL = 'structural',
+  USER_JOURNEY = 'user-journey',
+}
+
+export enum StructuralOverrideMode {
+  FULL = 'full',
+  VERBOSE = 'verbose',
+  MINIMAL = 'minimal',
+  COMPACT = 'compact',
+  DISABLED = 'disabled',
+}
+
+export type StructuralOverrides = {
+  header?: StructuralOverrideMode;
+  nav?: StructuralOverrideMode;
+  footer?: StructuralOverrideMode;
+};
+
 export type MfeRemoteDocument = MfeRemote & Document;
 
 @Schema()
@@ -10,6 +29,12 @@ export class MfeRemote extends Document {
 
   @Prop({ required: true })
   remoteEntryUrl: string;
+
+  @Prop({ required: true, enum: MfeRemoteType })
+  type: MfeRemoteType;
+
+  @Prop({ type: Object })
+  structuralOverrides?: StructuralOverrides;
 
   @Prop({ default: 1 })
   version: number;

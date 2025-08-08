@@ -4,7 +4,13 @@ import {
   IsOptional,
   IsUrl,
   IsBoolean,
+  IsEnum,
 } from 'class-validator';
+import {
+  MfeRemoteType, 
+  StructuralOverrides,
+  StructuralOverrideMode
+} from '../schemas/mfe-remote.schema';
 
 export class CreateMfeRemoteDto {
   @IsString()
@@ -30,4 +36,23 @@ export class CreateMfeRemoteDto {
   @IsBoolean()
   @IsOptional()
   archived?: boolean;
+
+  @IsEnum(MfeRemoteType)
+  @IsNotEmpty()
+  type: MfeRemoteType;
+
+  @IsOptional()
+  structuralOverrides?: StructuralOverrides;
+
+  @IsEnum(StructuralOverrideMode)
+  @IsOptional()
+  structuralOverridesHeader?: StructuralOverrideMode;
+
+  @IsEnum(StructuralOverrideMode)
+  @IsOptional()
+  structuralOverridesNav?: StructuralOverrideMode;
+
+  @IsEnum(StructuralOverrideMode)
+  @IsOptional()
+  structuralOverridesFooter?: StructuralOverrideMode;
 }
