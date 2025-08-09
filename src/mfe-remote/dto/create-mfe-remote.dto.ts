@@ -1,15 +1,17 @@
 import {
-  IsString,
-  IsNotEmpty,
-  IsOptional,
-  IsUrl,
   IsBoolean,
   IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
 } from 'class-validator';
 import {
-  MfeRemoteType, 
+  MfeRemoteType,
+  StructuralNavOverrideMode,
+  StructuralOverrideMode,
   StructuralOverrides,
-  StructuralOverrideMode
+  StructuralSubType,
 } from '../schemas/mfe-remote.schema';
 
 export class CreateMfeRemoteDto {
@@ -50,9 +52,13 @@ export class CreateMfeRemoteDto {
 
   @IsEnum(StructuralOverrideMode)
   @IsOptional()
-  structuralOverridesNav?: StructuralOverrideMode;
+  structuralOverridesNav?: StructuralNavOverrideMode;
 
   @IsEnum(StructuralOverrideMode)
   @IsOptional()
   structuralOverridesFooter?: StructuralOverrideMode;
+
+  @IsOptional()
+  @IsEnum(StructuralSubType)
+  structuralSubType?: StructuralSubType;
 }

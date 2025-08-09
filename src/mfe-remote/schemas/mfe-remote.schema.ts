@@ -8,15 +8,26 @@ export enum MfeRemoteType {
 
 export enum StructuralOverrideMode {
   FULL = 'full',
-  VERBOSE = 'verbose',
-  MINIMAL = 'minimal',
+  RELEXED = 'relexed',
   COMPACT = 'compact',
   DISABLED = 'disabled',
 }
 
+export enum StructuralNavOverrideMode {
+  VERBOSE = 'verbose',
+  MINIMAL = 'minimal',
+  DISABLED = 'disabled',
+}
+
+export enum StructuralSubType {
+  HEADER = 'header',
+  NAV = 'nav',
+  FOOTER = 'footer',
+}
+
 export type StructuralOverrides = {
   header?: StructuralOverrideMode;
-  nav?: StructuralOverrideMode;
+  nav?: StructuralNavOverrideMode;
   footer?: StructuralOverrideMode;
 };
 
@@ -35,6 +46,9 @@ export class MfeRemote extends Document {
 
   @Prop({ type: Object })
   structuralOverrides?: StructuralOverrides;
+
+  @Prop({ enum: StructuralOverrideMode })
+  structuralSubType?: StructuralOverrideMode;
 
   @Prop({ default: 1 })
   version: number;
@@ -55,7 +69,7 @@ export class MfeRemote extends Document {
 export const MfeRemoteSchema = SchemaFactory.createForClass(MfeRemote);
 
 // Auto-increment version on updates
-MfeRemoteSchema.pre('findOneAndUpdate', function() {
+MfeRemoteSchema.pre('findOneAndUpdate', function () {
   const update = this.getUpdate() as any;
   if (update) {
     if (!update.$inc) {
@@ -65,7 +79,7 @@ MfeRemoteSchema.pre('findOneAndUpdate', function() {
   }
 });
 
-MfeRemoteSchema.pre('updateOne', function() {
+MfeRemoteSchema.pre('updateOne', function () {
   const update = this.getUpdate() as any;
   if (update) {
     if (!update.$inc) {
@@ -75,7 +89,7 @@ MfeRemoteSchema.pre('updateOne', function() {
   }
 });
 
-MfeRemoteSchema.pre('updateMany', function() {
+MfeRemoteSchema.pre('updateMany', function () {
   const update = this.getUpdate() as any;
   if (update) {
     if (!update.$inc) {
