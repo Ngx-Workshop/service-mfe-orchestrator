@@ -47,8 +47,8 @@ export class MfeRemote extends Document {
   @Prop({ type: Object })
   structuralOverrides?: StructuralOverrides;
 
-  @Prop({ enum: StructuralOverrideMode })
-  structuralSubType?: StructuralOverrideMode;
+  @Prop({ enum: StructuralSubType })
+  structuralSubType?: StructuralSubType;
 
   @Prop({ default: 1 })
   version: number;
