@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "openapi": "ts-node src/swagger.ts",
+    "openapi": "node dist/swagger.js",
+    "postbuild": "node dist/swagger.js",
     "contracts:orchestrator:gen": "npm --prefix ./contracts/orchestrator run gen",
     "contracts:orchestrator:build": "npm --prefix ./contracts/orchestrator run build",
     "contracts:orchestrator:publish": "npm --prefix ./contracts/orchestrator publish --access public"
