@@ -3,3 +3,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore - file is generated at build/publish time.
 export * from './orchestrator.types';
+// Runtime enums + model interfaces (from openapi-typescript-codegen)
+// The generator creates: src/models/* and src/schemas/* (no client).
+// @ts-ignore - file is generated at build/publish time.
+export * from './models';
+// @ts-ignore - file is generated at build/publish time.
+export * from './schemas'; // sometimes codegen places schema helpers here; safe to export

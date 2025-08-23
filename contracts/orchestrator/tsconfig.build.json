@@ -2,8 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "declaration": true,
-    "emitDeclarationOnly": true,
     "outDir": "dist"
   },
-  "include": ["src/index.ts", "src/orchestrator.types.ts"]
+  "include": ["src/**/*.ts"]
 }
