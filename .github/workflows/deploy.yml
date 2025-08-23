@@ -42,23 +42,19 @@ jobs:
         run: |
           cd contracts/orchestrator
 
-          # First bump attempt
-          npm version --no-git-tag-version patch
-          CUR=$(node -p "require('./package.json').version")
-          echo "Attempting publish of v$CUR"
+          # Set version to "<major>.<minor>.<github.run_number>"
+          node -e "
+            const fs = require('fs');
+            const pkgPath = './package.json';
+            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+            const [maj, min] = String(pkg.version).split('.');
+            const uniquePatch = process.env.GITHUB_RUN_NUMBER || '0';
+            pkg.version = `${maj}.${min}.${uniquePatch}`;
+            fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+            console.log('Publishing version', pkg.version);
+          "
 
-          set +e
           npm publish --access public
-          code=$?
-          set -e
-
-          if [ $code -ne 0 ]; then
-            echo "First publish failed, bumping again in case of version collision…"
-            npm version --no-git-tag-version patch
-            CUR=$(node -p "require('./package.json').version")
-            echo "Retrying publish of v$CUR"
-            npm publish --access public
-          fi
 
       - name: Upload OpenAPI artifact
         uses: actions/upload-artifact@v4
