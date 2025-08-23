@@ -41,8 +41,24 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd contracts/orchestrator
+
+          # First bump attempt
           npm version --no-git-tag-version patch
+          CUR=$(node -p "require('./package.json').version")
+          echo "Attempting publish of v$CUR"
+
+          set +e
           npm publish --access public
+          code=$?
+          set -e
+
+          if [ $code -ne 0 ]; then
+            echo "First publish failed, bumping again in case of version collision…"
+            npm version --no-git-tag-version patch
+            CUR=$(node -p "require('./package.json').version")
+            echo "Retrying publish of v$CUR"
+            npm publish --access public
+          fi
 
       - name: Upload OpenAPI artifact
         uses: actions/upload-artifact@v4
