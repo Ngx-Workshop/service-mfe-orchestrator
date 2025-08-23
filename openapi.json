@@ -1,0 +1,566 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/mfe-remotes/auth-test": {
+      "get": {
+        "operationId": "MfeRemoteController_authTest",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthTestDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    },
+    "/mfe-remotes": {
+      "post": {
+        "operationId": "MfeRemoteController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMfeRemoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfeRemoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      },
+      "get": {
+        "operationId": "MfeRemoteController_findAll",
+        "parameters": [
+          {
+            "name": "archived",
+            "required": false,
+            "in": "query",
+            "description": "Filter by archived status",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MfeRemoteDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    },
+    "/mfe-remotes/{id}": {
+      "get": {
+        "operationId": "MfeRemoteController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfeRemoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      },
+      "patch": {
+        "operationId": "MfeRemoteController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMfeRemoteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfeRemoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      },
+      "delete": {
+        "operationId": "MfeRemoteController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    },
+    "/mfe-remotes/name/{name}": {
+      "get": {
+        "operationId": "MfeRemoteController_findByName",
+        "parameters": [
+          {
+            "name": "name",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfeRemoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    },
+    "/mfe-remotes/{id}/archive": {
+      "patch": {
+        "operationId": "MfeRemoteController_archive",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfeRemoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    },
+    "/mfe-remotes/{id}/unarchive": {
+      "patch": {
+        "operationId": "MfeRemoteController_unarchive",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfeRemoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    },
+    "/mfe-remotes/{id}/status": {
+      "patch": {
+        "operationId": "MfeRemoteController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfeRemoteDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "NGX MFE Orchestrator API",
+    "description": "",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "AuthTestDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "MfeRemoteType": {
+        "type": "string",
+        "enum": [
+          "structural",
+          "user-journey"
+        ]
+      },
+      "StructuralOverridesDto": {
+        "type": "object",
+        "properties": {
+          "header": {
+            "type": "string",
+            "enum": [
+              "full",
+              "relaxed",
+              "compact",
+              "disabled"
+            ]
+          },
+          "nav": {
+            "type": "string",
+            "enum": [
+              "verbose",
+              "minimal",
+              "disabled"
+            ]
+          },
+          "footer": {
+            "type": "string",
+            "enum": [
+              "full",
+              "relaxed",
+              "compact",
+              "disabled"
+            ]
+          }
+        }
+      },
+      "StructuralOverrideMode": {
+        "type": "string",
+        "enum": [
+          "full",
+          "relaxed",
+          "compact",
+          "disabled"
+        ]
+      },
+      "StructuralNavOverrideMode": {
+        "type": "string",
+        "enum": [
+          "verbose",
+          "minimal",
+          "disabled"
+        ]
+      },
+      "StructuralSubType": {
+        "type": "string",
+        "enum": [
+          "header",
+          "nav",
+          "footer"
+        ]
+      },
+      "CreateMfeRemoteDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "remoteEntryUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "status": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MfeRemoteType"
+              }
+            ]
+          },
+          "structuralOverrides": {
+            "$ref": "#/components/schemas/StructuralOverridesDto"
+          },
+          "structuralOverridesHeader": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralOverrideMode"
+              }
+            ]
+          },
+          "structuralOverridesNav": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralNavOverrideMode"
+              }
+            ]
+          },
+          "structuralOverridesFooter": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralOverrideMode"
+              }
+            ]
+          },
+          "structuralSubType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralSubType"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "remoteEntryUrl",
+          "type"
+        ]
+      },
+      "MfeRemoteDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "remoteEntryUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "structural",
+              "user-journey"
+            ]
+          },
+          "structuralOverrides": {
+            "$ref": "#/components/schemas/StructuralOverridesDto"
+          },
+          "structuralSubType": {
+            "type": "string",
+            "enum": [
+              "header",
+              "nav",
+              "footer"
+            ]
+          },
+          "version": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lastUpdated": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "_id",
+          "name",
+          "remoteEntryUrl",
+          "type",
+          "version",
+          "description",
+          "lastUpdated",
+          "archived"
+        ]
+      },
+      "UpdateMfeRemoteDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "remoteEntryUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "status": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "archived": {
+            "type": "boolean"
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MfeRemoteType"
+              }
+            ]
+          },
+          "structuralOverrides": {
+            "$ref": "#/components/schemas/StructuralOverridesDto"
+          },
+          "structuralOverridesHeader": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralOverrideMode"
+              }
+            ]
+          },
+          "structuralOverridesNav": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralNavOverrideMode"
+              }
+            ]
+          },
+          "structuralOverridesFooter": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralOverrideMode"
+              }
+            ]
+          },
+          "structuralSubType": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/StructuralSubType"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

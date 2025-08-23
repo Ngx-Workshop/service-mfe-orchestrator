@@ -8,7 +8,7 @@ export enum MfeRemoteType {
 
 export enum StructuralOverrideMode {
   FULL = 'full',
-  RELEXED = 'relexed',
+  RELAXED = 'relaxed',
   COMPACT = 'compact',
   DISABLED = 'disabled',
 }
