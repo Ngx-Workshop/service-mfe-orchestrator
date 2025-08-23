@@ -42,17 +42,17 @@ jobs:
         run: |
           cd contracts/orchestrator
 
-          # Set version to "<major>.<minor>.<github.run_number>"
-          node -e "
-            const fs = require('fs');
-            const pkgPath = './package.json';
-            const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
-            const [maj, min] = String(pkg.version).split('.');
-            const uniquePatch = process.env.GITHUB_RUN_NUMBER || '0';
-            pkg.version = `${maj}.${min}.${uniquePatch}`;
-            fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
-            console.log('Publishing version', pkg.version);
-          "
+          # Deterministic version: "<major>.<minor>.<github.run_number>"
+          node - <<'NODE'
+          const fs = require('fs');
+          const pkgPath = './package.json';
+          const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+          const [maj, min] = String(pkg.version).split('.');
+          const uniquePatch = process.env.GITHUB_RUN_NUMBER || '0';
+          pkg.version = `${maj}.${min}.${uniquePatch}`;
+          fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+          console.log('Publishing version', pkg.version);
+          NODE
 
           npm publish --access public
 
