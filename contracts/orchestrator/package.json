@@ -1,0 +1,24 @@
+{
+  "name": "@tmdjr/ngx-mfe-orchestrator-contracts",
+  "version": "0.0.1",
+  "description": "Types generated from NGX MFE Orchestrator OpenAPI spec",
+  "license": "MIT",
+  "private": false,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.d.ts",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "clean": "rm -rf dist src/orchestrator.types.ts",
+    "gen": "openapi-typescript ../../openapi.json --output ./src/orchestrator.types.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "prepublishOnly": "npm run clean && npm run gen && npm run build"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.5.1",
+    "typescript": "^5.7.3"
+  }
+}
