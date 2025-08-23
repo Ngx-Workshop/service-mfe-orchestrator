@@ -28,9 +28,17 @@ jobs:
           npm run gen
           npm run build
 
+      - name: Configure npm auth
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@tmdjr'
+          always-auth: true
+
       - name: Publish contracts to NPM (orchestrator)
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           cd contracts/orchestrator
           npm version --no-git-tag-version patch
