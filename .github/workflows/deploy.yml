@@ -13,18 +13,65 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
+      - name: Setup Node (cache npm)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@tmdjr'
+          cache: 'npm'
+
       - name: Generate OpenAPI spec
         env:
           GENERATE_OPENAPI: 'true'
         run: |
-          npm install
+          # soften registry pressure
+          npm config set fetch-retries 5
+          npm config set fetch-retry-factor 2
+          npm config set fetch-retry-maxtimeout 120000
+          npm config set fetch-retry-mintimeout 20000
+          npm config set audit false
+          npm config set fund false
+
+          # prefer lockfile speed + cached tarballs
+          for i in 1 2 3 4 5; do
+            npm ci --prefer-offline && break
+            echo "npm ci failed (attempt $i). Backing off…"
+            sleep $(( i * 10 ))
+          done
+
           npm run build
           npm run openapi
 
       - name: Build contracts (orchestrator)
         run: |
           cd contracts/orchestrator
-          npm install
+
+          # optional but recommended: commit a lockfile here too
+          # if you don't have package-lock.json yet, generate it once locally and commit
+
+          npm config set fetch-retries 5
+          npm config set fetch-retry-factor 2
+          npm config set fetch-retry-maxtimeout 120000
+          npm config set fetch-retry-mintimeout 20000
+          npm config set audit false
+          npm config set fund false
+
+          # use ci if you have a lockfile; else fall back to install with retries
+          if [ -f package-lock.json ]; then
+            for i in 1 2 3 4 5; do
+              npm ci --prefer-offline && break
+              echo "npm ci (contracts) failed (attempt $i). Backing off…"
+              sleep $(( i * 10 ))
+            done
+          else
+            for i in 1 2 3 4 5; do
+              npm install --prefer-offline && break
+              echo "npm install (contracts) failed (attempt $i). Backing off…"
+              sleep $(( i * 10 ))
+            done
+          fi
+
           npm run gen
           npm run build
 
