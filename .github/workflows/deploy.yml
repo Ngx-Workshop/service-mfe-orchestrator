@@ -25,14 +25,14 @@ jobs:
         env:
           GENERATE_OPENAPI: 'true'
         run: |
-          npm ci
+          npm install
           npm run build
           npm run openapi
 
       - name: Build contracts (orchestrator)
         run: |
           cd contracts/orchestrator
-          npm ci
+          npm install
           npm run gen
           npm run build
 
