@@ -75,6 +75,11 @@ export class CreateMfeRemoteDto {
   @IsOptional()
   archived?: boolean;
 
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  useRoutes?: boolean;
+
   @ApiProperty({ enum: MfeRemoteType, enumName: 'MfeRemoteType' })
   @IsEnum(MfeRemoteType)
   @IsNotEmpty()
