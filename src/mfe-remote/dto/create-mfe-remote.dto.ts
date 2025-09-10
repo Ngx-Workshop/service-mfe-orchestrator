@@ -41,6 +41,7 @@ export class MfeRemoteDto {
   @ApiProperty() description: string;
   @ApiProperty({ type: String, format: 'date-time' }) lastUpdated: string;
   @ApiProperty() archived: boolean;
+  @ApiProperty() useRoutes: boolean;
   @ApiProperty() __v: number;
 }
 
