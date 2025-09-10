@@ -64,6 +64,9 @@ export class MfeRemote extends Document {
 
   @Prop({ default: false })
   archived: boolean;
+
+  @Prop({ default: false })
+  useRoutes: boolean;
 }
 
 export const MfeRemoteSchema = SchemaFactory.createForClass(MfeRemote);
