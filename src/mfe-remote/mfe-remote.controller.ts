@@ -30,12 +30,12 @@ export class AuthTestDto {
 }
 
 @ApiTags('MFE Remotes')
+@UseGuards(RemoteAuthGuard)
 @Controller('mfe-remotes')
 export class MfeRemoteController {
   constructor(private readonly mfeRemoteService: MfeRemoteService) {}
 
   @Get('auth-test')
-  @UseGuards(RemoteAuthGuard)
   @ApiOkResponse({ type: AuthTestDto })
   authTest() {
     return this.mfeRemoteService.authTest();
