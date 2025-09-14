@@ -30,18 +30,19 @@ export class AuthTestDto {
 }
 
 @ApiTags('MFE Remotes')
-@UseGuards(RemoteAuthGuard)
 @Controller('mfe-remotes')
 export class MfeRemoteController {
   constructor(private readonly mfeRemoteService: MfeRemoteService) {}
 
   @Get('auth-test')
+  @UseGuards(RemoteAuthGuard)
   @ApiOkResponse({ type: AuthTestDto })
   authTest() {
     return this.mfeRemoteService.authTest();
   }
 
   @Post()
+  @UseGuards(RemoteAuthGuard)
   @ApiCreatedResponse({ type: MfeRemoteDto })
   create(@Body() createMfeRemoteDto: CreateMfeRemoteDto) {
     return this.mfeRemoteService.create(createMfeRemoteDto);
@@ -74,6 +75,7 @@ export class MfeRemoteController {
   }
 
   @Patch(':id')
+  @UseGuards(RemoteAuthGuard)
   @ApiOkResponse({ type: MfeRemoteDto })
   update(
     @Param('id') id: string,
@@ -83,6 +85,7 @@ export class MfeRemoteController {
   }
 
   @Delete(':id')
+  @UseGuards(RemoteAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
   remove(@Param('id') id: string) {
@@ -90,18 +93,21 @@ export class MfeRemoteController {
   }
 
   @Patch(':id/archive')
+  @UseGuards(RemoteAuthGuard)
   @ApiOkResponse({ type: MfeRemoteDto })
   archive(@Param('id') id: string) {
     return this.mfeRemoteService.archive(id);
   }
 
   @Patch(':id/unarchive')
+  @UseGuards(RemoteAuthGuard)
   @ApiOkResponse({ type: MfeRemoteDto })
   unarchive(@Param('id') id: string) {
     return this.mfeRemoteService.unarchive(id);
   }
 
   @Patch(':id/status')
+  @UseGuards(RemoteAuthGuard)
   @ApiOkResponse({ type: MfeRemoteDto })
   updateStatus(@Param('id') id: string, @Body('status') status: string) {
     return this.mfeRemoteService.updateStatus(id, status);
