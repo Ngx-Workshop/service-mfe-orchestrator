@@ -42,6 +42,7 @@ export class MfeRemoteDto {
   @ApiProperty({ type: String, format: 'date-time' }) lastUpdated: string;
   @ApiProperty() archived: boolean;
   @ApiProperty() useRoutes: boolean;
+  @ApiProperty() requiresAuth: boolean;
   @ApiProperty() __v: number;
 }
 
@@ -121,4 +122,9 @@ export class CreateMfeRemoteDto {
   @IsOptional()
   @IsEnum(StructuralSubType)
   structuralSubType?: StructuralSubType;
+
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  requiresAuth?: boolean;
 }
