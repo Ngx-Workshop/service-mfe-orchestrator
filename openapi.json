@@ -489,6 +489,12 @@
           },
           "archived": {
             "type": "boolean"
+          },
+          "useRoutes": {
+            "type": "boolean"
+          },
+          "__v": {
+            "type": "number"
           }
         },
         "required": [
@@ -499,7 +505,9 @@
           "version",
           "description",
           "lastUpdated",
-          "archived"
+          "archived",
+          "useRoutes",
+          "__v"
         ]
       },
       "UpdateMfeRemoteDto": {

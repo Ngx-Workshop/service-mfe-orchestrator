@@ -70,6 +70,10 @@ export class MfeRemote extends Document {
 
   @Prop({ default: false })
   requiresAuth: boolean;
+
+  // TODO make this a ENUM
+  @Prop({ default: false })
+  isAuth: boolean;
 }
 
 export const MfeRemoteSchema = SchemaFactory.createForClass(MfeRemote);

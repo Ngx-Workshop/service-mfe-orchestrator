@@ -43,6 +43,7 @@ export class MfeRemoteDto {
   @ApiProperty() archived: boolean;
   @ApiProperty() useRoutes: boolean;
   @ApiProperty() requiresAuth: boolean;
+  @ApiProperty() isAuth: boolean;
   @ApiProperty() __v: number;
 }
 
@@ -127,4 +128,9 @@ export class CreateMfeRemoteDto {
   @IsBoolean()
   @IsOptional()
   requiresAuth?: boolean;
+
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
+  isAuth?: boolean;
 }
