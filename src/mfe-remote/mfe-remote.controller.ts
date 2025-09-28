@@ -15,7 +15,6 @@ import {
   ApiCreatedResponse,
   ApiNoContentResponse,
   ApiOkResponse,
-  ApiProperty,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
@@ -24,22 +23,10 @@ import { CreateMfeRemoteDto, MfeRemoteDto } from './dto/create-mfe-remote.dto';
 import { UpdateMfeRemoteDto } from './dto/update-mfe-remote.dto';
 import { MfeRemoteService } from './mfe-remote.service';
 
-export class AuthTestDto {
-  @ApiProperty()
-  message: string;
-}
-
 @ApiTags('MFE Remotes')
 @Controller('mfe-remotes')
 export class MfeRemoteController {
   constructor(private readonly mfeRemoteService: MfeRemoteService) {}
-
-  @Get('auth-test')
-  @UseGuards(RemoteAuthGuard)
-  @ApiOkResponse({ type: AuthTestDto })
-  authTest() {
-    return this.mfeRemoteService.authTest();
-  }
 
   @Post()
   @UseGuards(RemoteAuthGuard)
