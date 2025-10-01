@@ -1,27 +1,6 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/mfe-remotes/auth-test": {
-      "get": {
-        "operationId": "MfeRemoteController_authTest",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AuthTestDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "MFE Remotes"
-        ]
-      }
-    },
     "/mfe-remotes": {
       "post": {
         "operationId": "MfeRemoteController_create",
@@ -305,17 +284,6 @@
   "servers": [],
   "components": {
     "schemas": {
-      "AuthTestDto": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "message"
-        ]
-      },
       "MfeRemoteType": {
         "type": "string",
         "enum": [
@@ -398,6 +366,9 @@
           "archived": {
             "type": "boolean"
           },
+          "useRoutes": {
+            "type": "boolean"
+          },
           "type": {
             "allOf": [
               {
@@ -435,6 +406,12 @@
                 "$ref": "#/components/schemas/StructuralSubType"
               }
             ]
+          },
+          "requiresAuth": {
+            "type": "boolean"
+          },
+          "isAdmin": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -493,6 +470,12 @@
           "useRoutes": {
             "type": "boolean"
           },
+          "requiresAuth": {
+            "type": "boolean"
+          },
+          "isAdmin": {
+            "type": "boolean"
+          },
           "__v": {
             "type": "number"
           }
@@ -507,6 +490,8 @@
           "lastUpdated",
           "archived",
           "useRoutes",
+          "requiresAuth",
+          "isAdmin",
           "__v"
         ]
       },
@@ -527,6 +512,9 @@
             "type": "string"
           },
           "archived": {
+            "type": "boolean"
+          },
+          "useRoutes": {
             "type": "boolean"
           },
           "type": {
@@ -566,6 +554,12 @@
                 "$ref": "#/components/schemas/StructuralSubType"
               }
             ]
+          },
+          "requiresAuth": {
+            "type": "boolean"
+          },
+          "isAdmin": {
+            "type": "boolean"
           }
         }
       }
