@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
-import { NgxAuthClientModule, RemoteAuthGuard } from '@tmdjr/ngx-auth-client';
+import {
+  NgxAuthClientModule,
+  RemoteAuthGuard,
+  RolesGuard,
+} from '@tmdjr/ngx-auth-client';
 import { MfeRemoteController } from './mfe-remote.controller';
 import { MfeRemoteService } from './mfe-remote.service';
 import { MfeRemote, MfeRemoteSchema } from './schemas/mfe-remote.schema';
@@ -38,6 +43,17 @@ const MFE_FAKE_PROVIDERS =
 @Module({
   imports: [NgxAuthClientModule, ...MFE_SCHEMA_IMPORTS],
   controllers: [MfeRemoteController],
-  providers: [MfeRemoteService, ...MFE_FAKE_PROVIDERS],
+  providers: [
+    MfeRemoteService,
+    {
+      provide: APP_GUARD,
+      useClass: RemoteAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+    ...MFE_FAKE_PROVIDERS,
+  ],
 })
 export class MfeRemoteModule {}

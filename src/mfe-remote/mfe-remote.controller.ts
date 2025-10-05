@@ -9,7 +9,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiCreatedResponse,
@@ -18,7 +17,8 @@ import {
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
-import { RemoteAuthGuard } from '@tmdjr/ngx-auth-client';
+import { Auth, Role, Roles } from '@tmdjr/ngx-auth-client';
+import { AuthType } from '@tmdjr/ngx-auth-client/enums/auth-type.enum';
 import { CreateMfeRemoteDto, MfeRemoteDto } from './dto/create-mfe-remote.dto';
 import { UpdateMfeRemoteDto } from './dto/update-mfe-remote.dto';
 import { MfeRemoteService } from './mfe-remote.service';
@@ -29,7 +29,7 @@ export class MfeRemoteController {
   constructor(private readonly mfeRemoteService: MfeRemoteService) {}
 
   @Post()
-  @UseGuards(RemoteAuthGuard)
+  @Roles(Role.Admin)
   @ApiCreatedResponse({ type: MfeRemoteDto })
   create(@Body() createMfeRemoteDto: CreateMfeRemoteDto) {
     return this.mfeRemoteService.create(createMfeRemoteDto);
@@ -42,6 +42,7 @@ export class MfeRemoteController {
     description: 'Filter by archived status',
   })
   @Get()
+  @Auth(AuthType.None)
   @ApiOkResponse({ type: MfeRemoteDto, isArray: true })
   findAll(@Query('archived') archived?: string) {
     const archivedFilter =
@@ -50,19 +51,21 @@ export class MfeRemoteController {
   }
 
   @Get(':id')
+  @Auth(AuthType.None)
   @ApiOkResponse({ type: MfeRemoteDto })
   findOne(@Param('id') id: string) {
     return this.mfeRemoteService.findOne(id);
   }
 
   @Get('name/:name')
+  @Auth(AuthType.None)
   @ApiOkResponse({ type: MfeRemoteDto })
   findByName(@Param('name') name: string) {
     return this.mfeRemoteService.findByName(name);
   }
 
   @Patch(':id')
-  @UseGuards(RemoteAuthGuard)
+  @Roles(Role.Admin)
   @ApiOkResponse({ type: MfeRemoteDto })
   update(
     @Param('id') id: string,
@@ -72,7 +75,7 @@ export class MfeRemoteController {
   }
 
   @Delete(':id')
-  @UseGuards(RemoteAuthGuard)
+  @Roles(Role.Admin)
   @HttpCode(HttpStatus.NO_CONTENT)
   @ApiNoContentResponse()
   remove(@Param('id') id: string) {
@@ -80,21 +83,21 @@ export class MfeRemoteController {
   }
 
   @Patch(':id/archive')
-  @UseGuards(RemoteAuthGuard)
+  @Roles(Role.Admin)
   @ApiOkResponse({ type: MfeRemoteDto })
   archive(@Param('id') id: string) {
     return this.mfeRemoteService.archive(id);
   }
 
   @Patch(':id/unarchive')
-  @UseGuards(RemoteAuthGuard)
+  @Roles(Role.Admin)
   @ApiOkResponse({ type: MfeRemoteDto })
   unarchive(@Param('id') id: string) {
     return this.mfeRemoteService.unarchive(id);
   }
 
   @Patch(':id/status')
-  @UseGuards(RemoteAuthGuard)
+  @Roles(Role.Admin)
   @ApiOkResponse({ type: MfeRemoteDto })
   updateStatus(@Param('id') id: string, @Body('status') status: string) {
     return this.mfeRemoteService.updateStatus(id, status);
