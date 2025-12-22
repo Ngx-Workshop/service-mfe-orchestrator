@@ -9,7 +9,6 @@ import {
 } from 'class-validator';
 import {
   MfeRemoteType,
-  StructuralNavOverrideMode,
   StructuralOverrideMode,
   StructuralOverrides,
   StructuralSubType,
@@ -20,8 +19,8 @@ export class StructuralOverridesDto {
   @ApiPropertyOptional({ enum: StructuralOverrideMode })
   header?: StructuralOverrideMode;
 
-  @ApiPropertyOptional({ enum: StructuralNavOverrideMode })
-  nav?: StructuralNavOverrideMode;
+  @ApiPropertyOptional({ enum: StructuralOverrideMode })
+  nav?: StructuralOverrideMode;
 
   @ApiPropertyOptional({ enum: StructuralOverrideMode })
   footer?: StructuralOverrideMode;
@@ -101,12 +100,12 @@ export class CreateMfeRemoteDto {
   structuralOverridesHeader?: StructuralOverrideMode;
 
   @ApiPropertyOptional({
-    enum: StructuralNavOverrideMode,
-    enumName: 'StructuralNavOverrideMode',
+    enum: StructuralOverrideMode,
+    enumName: 'StructuralOverrideMode',
   })
-  @IsEnum(StructuralNavOverrideMode)
+  @IsEnum(StructuralOverrideMode)
   @IsOptional()
-  structuralOverridesNav?: StructuralNavOverrideMode;
+  structuralOverridesNav?: StructuralOverrideMode;
 
   @ApiPropertyOptional({
     enum: StructuralOverrideMode,

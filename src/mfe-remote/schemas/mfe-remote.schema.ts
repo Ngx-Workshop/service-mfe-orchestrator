@@ -13,12 +13,6 @@ export enum StructuralOverrideMode {
   DISABLED = 'disabled',
 }
 
-export enum StructuralNavOverrideMode {
-  VERBOSE = 'verbose',
-  MINIMAL = 'minimal',
-  DISABLED = 'disabled',
-}
-
 export enum StructuralSubType {
   HEADER = 'header',
   NAV = 'nav',
@@ -27,7 +21,7 @@ export enum StructuralSubType {
 
 export type StructuralOverrides = {
   header?: StructuralOverrideMode;
-  nav?: StructuralNavOverrideMode;
+  nav?: StructuralOverrideMode;
   footer?: StructuralOverrideMode;
 };
 

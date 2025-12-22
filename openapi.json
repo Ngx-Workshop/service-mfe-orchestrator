@@ -306,8 +306,9 @@
           "nav": {
             "type": "string",
             "enum": [
-              "verbose",
-              "minimal",
+              "full",
+              "relaxed",
+              "compact",
               "disabled"
             ]
           },
@@ -328,14 +329,6 @@
           "full",
           "relaxed",
           "compact",
-          "disabled"
-        ]
-      },
-      "StructuralNavOverrideMode": {
-        "type": "string",
-        "enum": [
-          "verbose",
-          "minimal",
           "disabled"
         ]
       },
@@ -389,7 +382,7 @@
           "structuralOverridesNav": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/StructuralNavOverrideMode"
+                "$ref": "#/components/schemas/StructuralOverrideMode"
               }
             ]
           },
@@ -537,7 +530,7 @@
           "structuralOverridesNav": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/StructuralNavOverrideMode"
+                "$ref": "#/components/schemas/StructuralOverrideMode"
               }
             ]
           },
