@@ -1,98 +1,143 @@
+# Webservice MFE Orchestrator
+
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
+<img src="https://github.com/Ngx-Workshop/.github/blob/main/readme-assets/nestjs-logo.webp?raw=true" height="84" alt="Nest Logo" />
+</p>
+<p align="center">
+<img src="https://github.com/Ngx-Workshop/.github/blob/main/readme-assets/mongodb-logo.svg?raw=true" height="84" alt="MongoDB Logo" />
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+NestJS service that manages “MFE Remotes” metadata for the NGX Workshop platform. It provides CRUD APIs backed by MongoDB, enforces authentication/authorization for write operations, and generates an OpenAPI contract consumed by the typed contracts package.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## What this service does
 
-## Description
+- Stores and serves MFE Remote registry entries (remote entry URL, type, structural overrides, status, etc.).
+- Exposes a REST API for listing, lookup by ID/name, create/update, archive, and status updates.
+- Generates OpenAPI spec at build time and publishes TypeScript contracts in the contracts workspace.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Tech stack
 
-## Project setup
+- NestJS 11
+- MongoDB via Mongoose
+- Auth via `@tmdjr/ngx-auth-client` (JWT-based guards)
+- OpenAPI via `@nestjs/swagger`
 
-```bash
-$ npm install
+## Architecture overview
+
+### High-level flow
+
+1. HTTP requests hit `MfeRemoteController` endpoints under `/mfe-remotes`.
+2. Guards from `@tmdjr/ngx-auth-client` enforce auth/roles for mutating routes.
+3. `MfeRemoteService` performs CRUD via the Mongoose model.
+4. Mongoose schema hooks auto-increment `version` on updates.
+
+### Modules and responsibilities
+
+- `AppModule` initializes configuration, database connection, and feature modules.
+- `MfeRemoteModule` wires controller, service, schema, and auth guards.
+- `contracts/orchestrator` generates and publishes TypeScript types from OpenAPI.
+
+### Data model
+
+`MfeRemote` (MongoDB collection) includes:
+
+- `name` (unique)
+- `remoteEntryUrl`
+- `type` (`structural` | `user-journey`)
+- `structuralOverrides` (header/nav/footer override modes)
+- `structuralSubType` (header/nav/footer)
+- `version` (auto-incremented on updates)
+- `status`, `description`, `lastUpdated`, `archived`
+- `useRoutes`, `requiresAuth`, `isAdmin`
+
+### API surface (summary)
+
+Base path: `/mfe-remotes`
+
+- `GET /mfe-remotes` (public) — list, optional `?archived=true|false`
+- `GET /mfe-remotes/:id` (public) — get by id
+- `GET /mfe-remotes/name/:name` (public) — get by name
+- `POST /mfe-remotes` (admin) — create
+- `PATCH /mfe-remotes/:id` (admin) — update
+- `DELETE /mfe-remotes/:id` (admin) — delete
+- `PATCH /mfe-remotes/:id/archive` (admin) — archive
+- `PATCH /mfe-remotes/:id/unarchive` (admin) — unarchive
+- `PATCH /mfe-remotes/:id/status` (admin) — update status
+
+## Getting started
+
+### Prerequisites
+
+- Node.js 22+
+- MongoDB (local or remote)
+
+### Environment variables
+
+Create a `.env` file in the project root. Example:
+
+```
+PORT=3005
+MONGODB_URI=mongodb://localhost:27017/workshop-viewer
+AUTH_BASE_URL=http://localhost:3005
 ```
 
-## Compile and run the project
+Notes:
 
-```bash
-# development
-$ npm run start
+- `PORT` defaults to `3001` if not set.
+- `MONGODB_URI` is required for normal runtime.
 
-# watch mode
-$ npm run start:dev
+### Install and run
 
-# production mode
-$ npm run start:prod
+```
+npm ci
+npm run start:dev
 ```
 
-## Run tests
+### Build and generate OpenAPI
 
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```
+npm run build
 ```
 
-## Deployment
+The build runs `postbuild` which generates `openapi.json` via [src/swagger.ts](src/swagger.ts).
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Generate contracts
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```
+npm run contracts:orchestrator:gen
+npm run contracts:orchestrator:build
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Docker
 
-## Resources
+```
+docker compose -f "docker-compose.yml " up --build
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+Note: the compose file uses an external Docker network named `ngx-net`.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Project structure
 
-## Support
+```
+src/
+	app.module.ts
+	main.ts
+	swagger.ts
+	mfe-remote/
+		mfe-remote.controller.ts
+		mfe-remote.service.ts
+		mfe-remote.module.ts
+		dto/
+		schemas/
+contracts/
+	orchestrator/
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Development notes
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- OpenAPI generation sets `GENERATE_OPENAPI=true` so DB connections and guards are stubbed to avoid external dependencies.
+- Validation is enforced globally with `ValidationPipe` (whitelisting and forbidding extra fields).
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+UNLICENSED
