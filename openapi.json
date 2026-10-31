@@ -64,6 +64,47 @@
         ]
       }
     },
+    "/mfe-remotes/domain/{domain}": {
+      "get": {
+        "operationId": "MfeRemoteController_findByDomain",
+        "parameters": [
+          {
+            "name": "domain",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "$ref": "#/components/schemas/MfeRemoteDomain"
+            }
+          },
+          {
+            "name": "archived",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MfeRemoteDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "MFE Remotes"
+        ]
+      }
+    },
     "/mfe-remotes/{id}": {
       "get": {
         "operationId": "MfeRemoteController_findOne",
@@ -340,6 +381,13 @@
           "footer"
         ]
       },
+      "MfeRemoteDomain": {
+        "type": "string",
+        "enum": [
+          "admin",
+          "workshop"
+        ]
+      },
       "CreateMfeRemoteDto": {
         "type": "object",
         "properties": {
@@ -403,8 +451,15 @@
           "requiresAuth": {
             "type": "boolean"
           },
+          "domains": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MfeRemoteDomain"
+            }
+          },
           "isAdmin": {
-            "type": "boolean"
+            "type": "boolean",
+            "deprecated": true
           }
         },
         "required": [
@@ -466,8 +521,15 @@
           "requiresAuth": {
             "type": "boolean"
           },
+          "domains": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MfeRemoteDomain"
+            }
+          },
           "isAdmin": {
-            "type": "boolean"
+            "type": "boolean",
+            "deprecated": true
           },
           "__v": {
             "type": "number"
@@ -551,8 +613,15 @@
           "requiresAuth": {
             "type": "boolean"
           },
+          "domains": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MfeRemoteDomain"
+            }
+          },
           "isAdmin": {
-            "type": "boolean"
+            "type": "boolean",
+            "deprecated": true
           }
         }
       }

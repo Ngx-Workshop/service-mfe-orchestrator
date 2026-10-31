@@ -141,3 +141,27 @@ contracts/
 ## License
 
 UNLICENSED
+
+## Shell domain membership
+
+`MfeRemoteDomain` defines `admin` and `workshop`. Optional `domains` is an array
+of these values on create, update and remote responses. The existing `isAdmin`
+property remains available for older clients. An explicit domains array takes
+precedence, including `[]` (load in neither shell).
+
+Shells use `GET /mfe-remotes/domain/admin` or `/mfe-remotes/domain/workshop`
+(behind the gateway: `/api/mfe-remotes/domain/...`). Unsupported domains return
+400. Optional `?archived=true|false` works as on the unfiltered catalog endpoint;
+omitting it includes both statuses. Structural remotes also require membership.
+For records without domains, legacy membership applies: admin receives isAdmin
+or structural records; workshop receives non-admin records. No backfill is required.
+New administration forms save explicit arrays and no longer write isAdmin.
+
+Build the service to refresh `openapi.json`, then run
+`npm run contracts:orchestrator:gen` and `npm run contracts:orchestrator:build`.
+Generation exports `MfeRemoteDomain` as a union type with the existing
+`--useUnionTypes true` configuration. Publish and upgrade consumers separately.
+Deploy the service before switching shells to the new endpoints; deploy both
+shells before changing domain assignments so old shell filtering cannot disagree.
+Domain selection controls placement; administrator permissions remain governed
+by the service's existing authorization decorators.

@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseEnumPipe,
   Patch,
   Post,
   Query,
@@ -15,12 +16,14 @@ import {
   ApiNoContentResponse,
   ApiOkResponse,
   ApiQuery,
+  ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
 import { Auth, Role, Roles } from '@tmdjr/ngx-auth-client';
 import { AuthType } from '@tmdjr/ngx-auth-client/enums/auth-type.enum';
 import { CreateMfeRemoteDto, MfeRemoteDto } from './dto/create-mfe-remote.dto';
 import { UpdateMfeRemoteDto } from './dto/update-mfe-remote.dto';
+import { MfeRemoteDomain } from './schemas/mfe-remote.schema';
 import { MfeRemoteService } from './mfe-remote.service';
 
 @ApiTags('MFE Remotes')
@@ -48,6 +51,25 @@ export class MfeRemoteController {
     const archivedFilter =
       archived === 'true' ? true : archived === 'false' ? false : undefined;
     return this.mfeRemoteService.findAll(archivedFilter);
+  }
+
+  @Get('domain/:domain')
+  @Auth(AuthType.None)
+  @ApiParam({
+    name: 'domain',
+    enum: MfeRemoteDomain,
+    enumName: 'MfeRemoteDomain',
+  })
+  @ApiQuery({ name: 'archived', required: false, type: Boolean })
+  @ApiOkResponse({ type: MfeRemoteDto, isArray: true })
+  findByDomain(
+    @Param('domain', new ParseEnumPipe(MfeRemoteDomain))
+    domain: MfeRemoteDomain,
+    @Query('archived') archived?: string
+  ) {
+    const archivedFilter =
+      archived === 'true' ? true : archived === 'false' ? false : undefined;
+    return this.mfeRemoteService.findByDomain(domain, archivedFilter);
   }
 
   @Get(':id')

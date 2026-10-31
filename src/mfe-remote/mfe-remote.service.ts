@@ -5,7 +5,12 @@ import {
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { MfeRemote, MfeRemoteDocument } from './schemas/mfe-remote.schema';
+import {
+  MfeRemote,
+  MfeRemoteDocument,
+  MfeRemoteDomain,
+  MfeRemoteType,
+} from './schemas/mfe-remote.schema';
 import { CreateMfeRemoteDto } from './dto/create-mfe-remote.dto';
 import { UpdateMfeRemoteDto } from './dto/update-mfe-remote.dto';
 import { lastValueFrom, of } from 'rxjs';
@@ -14,9 +19,8 @@ import { lastValueFrom, of } from 'rxjs';
 export class MfeRemoteService {
   constructor(
     @InjectModel(MfeRemote.name)
-    private mfeRemoteModel: Model<MfeRemoteDocument>,
+    private mfeRemoteModel: Model<MfeRemoteDocument>
   ) {}
-
 
   async authTest(): Promise<{ message: string }> {
     return lastValueFrom(of({ message: 'Authentication successful Service' }));
@@ -42,6 +46,25 @@ export class MfeRemoteService {
     return await this.mfeRemoteModel.find(filter).exec();
   }
 
+  async findByDomain(
+    domain: MfeRemoteDomain,
+    archived?: boolean
+  ): Promise<MfeRemote[]> {
+    const legacyMembership =
+      domain === MfeRemoteDomain.ADMIN
+        ? { $or: [{ isAdmin: true }, { type: MfeRemoteType.STRUCTURAL }] }
+        : { isAdmin: { $ne: true } };
+    return this.mfeRemoteModel
+      .find({
+        ...(archived !== undefined ? { archived } : {}),
+        $or: [
+          { domains: domain },
+          { domains: { $exists: false }, ...legacyMembership },
+        ],
+      })
+      .exec();
+  }
+
   async findOne(id: string): Promise<MfeRemote> {
     const mfeRemote = await this.mfeRemoteModel.findById(id).exec();
     if (!mfeRemote) {
@@ -60,14 +83,14 @@ export class MfeRemoteService {
 
   async update(
     id: string,
-    updateMfeRemoteDto: UpdateMfeRemoteDto,
+    updateMfeRemoteDto: UpdateMfeRemoteDto
   ): Promise<MfeRemote> {
     try {
       const updatedMfeRemote = await this.mfeRemoteModel
         .findByIdAndUpdate(
           id,
           { ...updateMfeRemoteDto, lastUpdated: new Date() },
-          { new: true },
+          { new: true, runValidators: true }
         )
         .exec();
 

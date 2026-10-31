@@ -1,6 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+export enum MfeRemoteDomain {
+  ADMIN = 'admin',
+  WORKSHOP = 'workshop',
+}
+
 export enum MfeRemoteType {
   STRUCTURAL = 'structural',
   USER_JOURNEY = 'user-journey',
@@ -65,7 +70,11 @@ export class MfeRemote extends Document {
   @Prop({ default: false })
   requiresAuth: boolean;
 
-  // TODO make this a ENUM
+  // Undefined distinguishes legacy records from an explicit empty selection.
+  @Prop({ type: [String], enum: MfeRemoteDomain, default: undefined })
+  domains?: MfeRemoteDomain[];
+
+  // Legacy shell membership; domains takes precedence when present.
   @Prop({ default: false })
   isAdmin: boolean;
 }

@@ -1,5 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
+  IsArray,
+  ArrayUnique,
+  ValidateIf,
   IsBoolean,
   IsEnum,
   IsNotEmpty,
@@ -8,6 +11,7 @@ import {
   IsUrl,
 } from 'class-validator';
 import {
+  MfeRemoteDomain,
   MfeRemoteType,
   StructuralOverrideMode,
   StructuralOverrides,
@@ -42,7 +46,13 @@ export class MfeRemoteDto {
   @ApiProperty() archived: boolean;
   @ApiProperty() useRoutes: boolean;
   @ApiProperty() requiresAuth: boolean;
-  @ApiProperty() isAdmin: boolean;
+  @ApiPropertyOptional({
+    enum: MfeRemoteDomain,
+    enumName: 'MfeRemoteDomain',
+    isArray: true,
+  })
+  domains?: MfeRemoteDomain[];
+  @ApiProperty({ deprecated: true }) isAdmin: boolean;
   @ApiProperty() __v: number;
 }
 
@@ -128,7 +138,18 @@ export class CreateMfeRemoteDto {
   @IsOptional()
   requiresAuth?: boolean;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({
+    enum: MfeRemoteDomain,
+    enumName: 'MfeRemoteDomain',
+    isArray: true,
+  })
+  @ValidateIf((_object, value) => value !== undefined)
+  @IsArray()
+  @ArrayUnique()
+  @IsEnum(MfeRemoteDomain, { each: true })
+  domains?: MfeRemoteDomain[];
+
+  @ApiPropertyOptional({ deprecated: true })
   @IsBoolean()
   @IsOptional()
   isAdmin?: boolean;
