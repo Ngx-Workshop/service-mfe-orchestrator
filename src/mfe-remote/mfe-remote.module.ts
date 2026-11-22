@@ -1,12 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule, getModelToken } from '@nestjs/mongoose';
-import {
-  AuthenticationGuard,
-  NgxAuthClientModule,
-  RemoteAuthGuard,
-  RolesGuard,
-} from '@tmdjr/ngx-auth-client';
 import { MfeRemoteController } from './mfe-remote.controller';
 import { MfeRemoteService } from './mfe-remote.service';
 import { MfeRemote, MfeRemoteSchema } from './schemas/mfe-remote.schema';
@@ -19,42 +12,19 @@ const MFE_SCHEMA_IMPORTS =
           { name: MfeRemote.name, schema: MfeRemoteSchema },
         ]),
       ];
-// When generating OpenAPI, stub out the Mongoose model and the guard
+// Schema generation must not perform persistence operations.
 const MFE_FAKE_PROVIDERS =
   process.env.GENERATE_OPENAPI === 'true'
     ? [
         {
           provide: getModelToken(MfeRemote.name),
-          // Minimal fake the service can accept; if service calls methods during generation (it shouldn't), add no-op fns
-          useValue: {
-            // common Mongoose methods we might accidentally touch
-            find: () => ({ exec: async () => [] }),
-            findById: () => ({ exec: async () => null }),
-            findByIdAndUpdate: () => ({ exec: async () => null }),
-            findOne: () => ({ exec: async () => null }),
-          },
-        },
-        {
-          // In case the guard has runtime deps — make it a no-op
-          provide: RemoteAuthGuard,
-          useValue: { canActivate: () => true },
+          useValue: Object.freeze({}),
         },
       ]
     : [];
 @Module({
-  imports: [NgxAuthClientModule, ...MFE_SCHEMA_IMPORTS],
+  imports: MFE_SCHEMA_IMPORTS,
   controllers: [MfeRemoteController],
-  providers: [
-    MfeRemoteService,
-    {
-      provide: APP_GUARD,
-      useClass: AuthenticationGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
-    ...MFE_FAKE_PROVIDERS,
-  ],
+  providers: [MfeRemoteService, ...MFE_FAKE_PROVIDERS],
 })
 export class MfeRemoteModule {}

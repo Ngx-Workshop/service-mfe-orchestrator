@@ -1,6 +1,34 @@
-import { ConsoleLogger, INestApplication, Logger } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  ConsoleLogger,
+  HttpException,
+  INestApplication,
+  Logger,
+} from '@nestjs/common';
+import { BaseExceptionFilter } from '@nestjs/core';
 import type { NextFunction, Request, Response } from 'express';
 import { randomUUID } from 'node:crypto';
+import { AsyncLocalStorage } from 'node:async_hooks';
+
+const requestContext = new AsyncLocalStorage<{ requestId: string }>();
+
+export function currentRequestId(): string | undefined {
+  return requestContext.getStore()?.requestId;
+}
+
+class SafeHttpExceptionFilter extends BaseExceptionFilter<unknown> {
+  override catch(exception: unknown, host: ArgumentsHost): void {
+    if (exception instanceof HttpException) {
+      super.catch(exception, host);
+      return;
+    }
+    // Preserve Nest's HTTP response without its redundant raw exception log.
+    const body = this.isHttpError(exception)
+      ? { statusCode: exception.statusCode, message: exception.message }
+      : { statusCode: 500, message: 'Internal server error' };
+    super.catch(new HttpException(body, body.statusCode), host);
+  }
+}
 
 export function createServiceLogger(): ConsoleLogger {
   return new ConsoleLogger({
@@ -10,7 +38,9 @@ export function createServiceLogger(): ConsoleLogger {
   });
 }
 
-export function httpLoggingMiddleware(logger = new Logger('HTTP')) {
+export function httpLoggingMiddleware(
+  logger: Pick<Logger, 'log' | 'warn' | 'error'> = new Logger('HTTP')
+) {
   return (request: Request, response: Response, next: NextFunction): void => {
     // Heartbeats are represented by probe metrics, not repetitive access logs.
     if (
@@ -38,11 +68,12 @@ export function httpLoggingMiddleware(logger = new Logger('HTTP')) {
       else if (entry.statusCode >= 400) logger.warn(entry);
       else logger.log(entry);
     });
-    next();
+    requestContext.run({ requestId }, next);
   };
 }
 
 export function configureObservability(app: INestApplication): void {
   app.use(httpLoggingMiddleware());
+  app.useGlobalFilters(new SafeHttpExceptionFilter(app.getHttpAdapter()));
   app.enableShutdownHooks();
 }

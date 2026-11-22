@@ -1,0 +1,13 @@
+**/node_modules/
+**/dist/
+**/coverage/
+.git/
+.husky/_/
+contracts/
+openapi.json
+package-lock.json
+**/*.tsbuildinfo
+**/vendor/
+**/vendored/
+**/.env*
+**/.npmrc
