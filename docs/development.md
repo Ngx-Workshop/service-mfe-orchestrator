@@ -85,3 +85,5 @@ test mocks. Changed service/module/observability/e2e paths pass targeted lint.
 See [handoff](../specs/001-code-maintenance/handoff.md) for exact commands and limits.
 No live Mongo/auth/Grafana ingestion, paid provider calls or production writes were
 used as tests.
+
+Deployment and npm publication now follow [deployment-workflows](deployment-workflows.md).

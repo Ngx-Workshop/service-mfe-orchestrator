@@ -54,3 +54,5 @@ See the source-backed [audit](../specs/001-code-maintenance/audit.md) and
 [handoff](../specs/001-code-maintenance/handoff.md) for regressions, baseline lint
 debt and external acceptance. This is a targeted maintenance audit, not a full
 security audit or evidence of live Mongo/auth/Grafana integration.
+
+Generated deployment orchestration is centrally managed by the Node CLI; see [deployment-workflows](deployment-workflows.md).

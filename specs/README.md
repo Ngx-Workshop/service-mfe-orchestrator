@@ -14,3 +14,5 @@ Review the handoff's remaining owner actions; no next feature has been selected.
 Older unfinished work retains its recorded status.
 
 Follow the [local workflow](../.specify/README.md). Keep historical records.
+
+- [002-deployment-management](002-deployment-management/spec.md): Implemented locally; automatic verification/deployment, manual publication.
